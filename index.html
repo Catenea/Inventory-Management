@@ -13,23 +13,20 @@
   <nav class="z-depth-0 grey lighten-4">
     <div class="nav-wrapper container">
       <a href="#" class="brand-logo">
-        <img src="img/logo.svg" style="width: 180px; margin-top: 10px;">
+        <img src="img/Logo-UJAP2.png" style="width: 70px;">
       </a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li class="logged-in">
-            <a href="#" class="grey-text modal-trigger" data-target="modal-account">Account</a>
+            <a href="#" class="grey-text" id="logout">Cerrar Sesión</a>
           </li>
           <li class="logged-in">
-            <a href="#" class="grey-text" id="logout">Logout</a>
-          </li>
-          <li class="logged-in">
-            <a href="#" class="grey-text modal-trigger" data-target="modal-create">Create Guide</a>
+            <a href="#" class="grey-text modal-trigger" data-target="modal-create">Añadir Item</a>
           </li>
           <li class="logged-out">
-            <a href="#" class="grey-text modal-trigger" data-target="modal-login">Login</a>
+            <a href="#" class="grey-text modal-trigger" data-target="modal-login">Iniciar Sesión</a>
           </li>
           <li class="logged-out">
-            <a href="#" class="grey-text modal-trigger" data-target="modal-signup">Sign up</a>
+            <a href="#" class="grey-text modal-trigger" data-target="modal-signup">Registrarse</a>
           </li>
       </ul>
     </div>
@@ -82,7 +79,7 @@
   <!-- CREATE GUIDE MODAL -->
   <div id="modal-create" class="modal">
     <div class="modal-content">
-      <h4>Create Guide</h4><br />
+      <h4>Crear Item</h4><br />
       <form id="create-form">
         <div class="input-field">
           <input type="text" id="name" required />
@@ -104,7 +101,7 @@
           <input type="text" id="quantity" required />
           <label for="quantity">Cantidad</label>
         </div>
-        <button class="btn yellow darken-2 z-depth-0">Create</button>
+        <button class="btn yellow darken-2 z-depth-0">Crear</button>
       </form>
     </div>
   </div>

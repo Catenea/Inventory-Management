@@ -20,8 +20,41 @@ const setupGuides = (data) => {
 
   if (data.length) {
     let html = '';
+    bus1 = `
+    <div class="container valign-wrapper" style="margin-top: 40px;">
+    <a
+          id="btnBuscar"
+          onclick="ReiniciarFiltro()"
+          class="waves-effect waves-light red btn-small"
+          >Reiniciar Búsqueda</a
+        >
+        <a
+        id="btnBuscar"
+        onclick="Filtrar()"
+        class="waves-effect waves-light green btn-small"
+        >Filtrar Búsqueda</a
+      >
+    <form id="filtro-form" style="margin-left: 40px; width:400px;">
+      <input type="text" id="busqueda" required/>
+      <label for="busqueda">Buscar</label>
+    </form>
+    <div class="input-field col s12" style="margin-left: 40px; margin-right: 40px">
+            <select class="Filtro" id="Filtro">
+              <option value="" disabled selected
+                >Filtro</option
+              >
+              <option value="name">Nombre</option>
+              <option value="cost">Costo</option>
+              <option value="price">Precio</option>
+            </select>
+            <label>Filtrar por</label>
+          </div>
+          
+    </div>
+  `;
+
     data.forEach(doc => {
-      if (doc.get("active") == true) {
+      if (doc.get("active") == true && doc.get("Filtro") == "Dentro") {
       const item = doc.data();
       var gan = item.price - item.cost
       const li = `
@@ -45,9 +78,11 @@ const setupGuides = (data) => {
       html += li;
       }
     });
-    guideList.innerHTML = html
+    guideList.innerHTML = bus1 + html
+    const filtro = document.getElementById("Filtro");
+    var instances = M.FormSelect.init(filtro, {});
   } else {
-    guideList.innerHTML = '<h5 class="center-align">Login to view guides</h5>';
+    guideList.innerHTML = '<h5 class="center-align">Inicie sesión para ver los items</h5>';
   }
   
 
@@ -137,4 +172,85 @@ function ElimItem(name) {
       console.log("No such document!");
     }
   });
+}
+
+//FILTROS
+
+function Filtrar() {
+  const FiltroForm = document.querySelector("#filtro-form");
+
+  var selectFiltro = document.getElementById("Filtro");
+  var instances = M.FormSelect.init(selectFiltro);
+  var seleccionadoSec = instances.getSelectedValues();
+  console.log(seleccionadoSec);
+  var filtro = seleccionadoSec[0].toString();
+
+  console.log("items");
+  console.log(filtro);
+  console.log(FiltroForm["busqueda"].value.toString());
+
+  var doc_filtrar = db
+    .collection("items")
+    .where(filtro, "!=", FiltroForm["busqueda"].value.toString());
+  doc_filtrar
+    .get()
+    .then(function(querySnapshot) {
+      if (querySnapshot.size > 0) {
+        // Contents of first document
+        querySnapshot.forEach(function(doc) {
+          db.collection("items")
+            .doc(doc.id)
+            .update({ Filtro: "Fuera" });
+        });
+      } else {
+        console.log("No such document!");
+      }
+    })
+    .then(function() {
+      console.log("Ya");
+    });
+
+  var doc_filtrar2 = db
+    .collection("items")
+    .where(filtro, ">", FiltroForm["busqueda"].value.toString());
+  doc_filtrar2
+    .get()
+    .then(function(querySnapshot) {
+      if (querySnapshot.size > 0) {
+        // Contents of first document
+        querySnapshot.forEach(function(doc) {
+          db.collection("items")
+            .doc(doc.id)
+            .update({ Filtro: "Fuera" });
+        });
+      } else {
+        console.log("No such document!");
+      }
+    })
+    .then(function() {
+      console.log("Ya");
+    });
+}
+
+function ReiniciarFiltro() {
+  var doc_rei = db.collection("items").where("Filtro", "==", "Fuera");
+  doc_rei
+    .get()
+    .then(function(querySnapshot) {
+      if (querySnapshot.size > 0) {
+       
+        // Contents of first document
+        querySnapshot.forEach(function(doc) {
+          console.log(doc.data());
+          db.collection("items")
+            .doc(doc.id)
+            .update({ Filtro: "Dentro" });
+        });
+      } else {
+        console.log("No such document!");
+      }
+    })
+    .then(function() {
+      console.log("Filtro reiniciado!");
+    });
 }
