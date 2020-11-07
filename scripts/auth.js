@@ -1,15 +1,36 @@
-db.collection('items').get().then(snapshot => {
-    setupGuides(snapshot.docs);
-  });
-
-// listen for auth status changes
+  // listen for auth status changes
 auth.onAuthStateChanged(user => {
-    if (user) {
-      console.log('user logged in: ', user);
-    } else {
-      console.log('user logged out');
-    }
-  })
+  if (user) {
+    db.collection('items').onSnapshot(snapshot => {
+      setupGuides(snapshot.docs);
+      setupUI(user);
+    });
+  } else {
+    setupUI();
+    setupGuides([]);
+  }
+});
+
+// create new guide
+const createForm = document.querySelector('#create-form');
+createForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  db.collection('items').add({
+    name: createForm.name.value,
+    description: createForm.description.value,
+    cost: createForm.cost.value,
+    price: createForm.price.value,
+    quantity: createForm.quantity.value,
+    active: true
+  }).then(() => {
+    // close the create modal & reset form
+    const modal = document.querySelector('#modal-create');
+    M.Modal.getInstance(modal).close();
+    createForm.reset();
+  }).catch(err => {
+    console.log(err.message);
+  });
+});
 
 // signup
 const signupForm = document.querySelector('#signup-form');
